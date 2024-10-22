@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    FMOD.Studio.EventInstance Walking;
     
     //Sprinting
     Vector3 previousPos;
@@ -52,6 +53,9 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Walking = FMODUnity.RuntimeManager.CreateInstance("event:/Walking");
+        Walking.start();
+
         _enemy = FindObjectOfType<Enemy>();
         codePanel = FindObjectOfType<CodePanel>();
         playerCam = gameObject.GetComponentInChildren<Camera>();
@@ -66,7 +70,14 @@ public class Player : MonoBehaviour
     
     void Update()
     {
-         distance = Vector3.Distance(transform.position, _enemy.transform.position);
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        {
+            FMODUnity.RuntimeManager.StudioSystem.setParameterByName("Walking", 1f);
+        }
+        else
+            FMODUnity.RuntimeManager.StudioSystem.setParameterByName("Walking", 0f);
+
+        distance = Vector3.Distance(transform.position, _enemy.transform.position);
        
         if (distance < 150f)
         { 
